@@ -1,0 +1,85 @@
+<% include ../partials/head %>
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Database</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                <li><a href="/">Home</a></li>
+                <li><a href="/admin">Admin</a></li>
+                <li><a href="/student">Student</a></li>
+                </li>
+                <li><a href="/">Contract</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+  
+<div class="container">
+  <h3>Select your database</h3>
+  <p>database can select</p>
+  <div class="table-responsive">
+    <table class="table table-striped" id = "mytable" >
+    </table>
+  </div>
+</div>
+
+
+<script src="datatable/js/jquery.dataTables.min.js"></script>
+<script>
+    var json_data = '';
+    function create_table(data){
+        var name = Object.keys(data[0]);
+        var text = "";
+        //head table
+        text += "<thead><tr>"
+        for (var i = 0; i < name.length; i++){
+            text += "<th>"
+            text += name[i]
+            text += "</th>"
+        }
+        text += "</tr></thead>"
+        //body table
+        text += "<tbody>"
+        for (var i = 0; i < data.length; i++){
+            text += "<tr>"
+            for (var j = 0; j < name.length; j++){
+                text += "<td>"
+                text += data[i][name[j]]
+                text += "</td>"
+            }
+            text += "</tr>"
+        }
+        text += "</tbody>"
+        document.getElementById("mytable").innerHTML = text;
+	    $('#mytable').dataTable();
+    }
+    function showTable(str) {
+        var xhttp;
+        var data;
+        if (str == "") {
+            document.getElementById("mytable").innerHTML = "";
+            return;
+        }
+        xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                data = this.responseText
+                json_data = JSON.parse(data);
+                create_table(json_data);
+//                document.getElementById("mytable").innerHTML = this.responseText;
+            }
+        };
+        xhttp.open("GET", "/get/"+str, true);
+        xhttp.send();
+    }
+</script>
+<% include ../partials/footer %>
